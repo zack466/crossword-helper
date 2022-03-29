@@ -1,4 +1,3 @@
-import numpy as np
 import argparse
 import enum
 
@@ -8,6 +7,19 @@ class Found(enum.Enum):
     ldiag = 2
     rdiag = 3
     no = 4
+
+def diagonals(arr):
+    if len(arr) == 0:
+        return []
+    ret = []
+    for i in range(len(arr) * 2 - 1):
+        diag = []
+        for j in range(len(arr)):
+            if 0 <= i - j < len(arr):
+                diag.append(arr[j][i - j])
+        if len(diag) > 0:
+            ret.append(diag)
+    return ret
 
 def word_exists(board, word):
     word = word.upper();
@@ -21,11 +33,10 @@ def word_exists(board, word):
             return Found.column, i+1
 
     # shamelessly copied from some stackoverflow post
-    a = np.array(board)
-    ldiags = [a[::-1,:].diagonal(i) for i in range(-a.shape[0]+1,a.shape[1])]
-    rdiags = [a.diagonal(i) for i in range(a.shape[1]-1,-a.shape[0],-1)]
-
+    ldiags = diagonals(board)
     ldiags = list(map(lambda x: "".join(x), ldiags))
+
+    rdiags = diagonals([list(reversed(row)) for row in board])
     rdiags = list(map(lambda x: "".join(x), rdiags))
 
     for i, diag in enumerate(ldiags):
@@ -47,7 +58,7 @@ def main():
 
     with open(args.filename, 'r') as f:
         lines = f.readlines();
-        lines = map(lambda x: x.rstrip(), lines)
+        lines = map(lambda x: x.rstrip().upper(), lines)
         lines = map(list, lines)
         lines = list(lines)
 
@@ -59,7 +70,7 @@ def main():
             print("> ", end='')
 
         try:
-            word = input()
+            word = input().upper()
         except EOFError:
             break
 
