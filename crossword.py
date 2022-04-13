@@ -32,7 +32,6 @@ def word_exists(board, word):
         if word in c or word[::-1] in c:
             return Found.column, i+1
 
-    # shamelessly copied from some stackoverflow post
     ldiags = diagonals(board)
     ldiags = list(map(lambda x: "".join(x), ldiags))
 
